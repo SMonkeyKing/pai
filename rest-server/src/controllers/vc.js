@@ -25,19 +25,7 @@ const logger = require('../config/logger');
 const load = (req, res, next, vcName) => {
   new VirtualCluster(vcName, (vcInfo, error) => {
     if (error) {
-      if (error.message === 'VirtualClusterNotFound') {
-        logger.warn('load virtual cluster %s error, could not find virtual cluster', vcName);
-        return res.status(404).json({
-          error: 'VirtualClusterNotFound',
-          message: `could not find virtual cluster ${vcName}`,
-        });
-      } else {
-        logger.warn('internal server error');
-        return res.status(500).json({
-          error: 'InternalServerError',
-          message: 'internal server error',
-        });
-      }
+      return next(error);
     }
     req.vc = vcInfo;
     return next();
